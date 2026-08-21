@@ -1,0 +1,156 @@
+openapi: 3.0.3
+
+info:
+  title: Todo List API
+  description: API REST para gerenciamento de tarefas utilizando arquitetura hexagonal.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080
+    description: Ambiente local
+
+tags:
+  - name: Tasks
+    description: Operações relacionadas às tarefas
+
+paths:
+  /api/tasks:
+    get:
+      tags:
+        - Tasks
+      summary: Lista todas as tarefas
+      operationId: listTasks
+      responses:
+        '200':
+          description: Lista de tarefas retornada com sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaskResponse'
+
+    post:
+      tags:
+        - Tasks
+      summary: Cria uma nova tarefa
+      operationId: createTask
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTaskRequest'
+      responses:
+        '201':
+          description: Tarefa criada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResponse'
+
+        '400':
+          description: Dados enviados são inválidos
+
+  /api/tasks/{id}:
+    get:
+      tags:
+        - Tasks
+      summary: Busca uma tarefa pelo identificador
+      operationId: getTaskById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Identificador da tarefa
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Tarefa encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResponse'
+
+        '404':
+          description: Tarefa não encontrada
+
+components:
+  schemas:
+
+    CreateTaskRequest:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 120
+          example: Estudar Spring Boot
+
+        description:
+          type: string
+          maxLength: 500
+          example: Revisar arquitetura hexagonal e APIs REST
+
+        priority:
+          $ref: '#/components/schemas/TaskPriority'
+
+        dueDate:
+          type: string
+          format: date
+          example: '2026-08-25'
+
+    TaskResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440000
+
+        title:
+          type: string
+          example: Estudar Spring Boot
+
+        description:
+          type: string
+          example: Revisar arquitetura hexagonal e APIs REST
+
+        status:
+          $ref: '#/components/schemas/TaskStatus'
+
+        priority:
+          $ref: '#/components/schemas/TaskPriority'
+
+        dueDate:
+          type: string
+          format: date
+          example: '2026-08-25'
+
+        createdAt:
+          type: string
+          format: date-time
+
+        updatedAt:
+          type: string
+          format: date-time
+
+    TaskStatus:
+      type: string
+      enum:
+        - PENDING
+        - IN_PROGRESS
+        - COMPLETED
+        - CANCELED
+
+    TaskPriority:
+      type: string
+      enum:
+        - LOW
+        - MEDIUM
+        - HIGH
+        - URGENT
