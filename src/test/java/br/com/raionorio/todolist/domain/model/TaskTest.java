@@ -20,6 +20,7 @@ class TaskTest {
 
         assertEquals(TaskStatus.PENDING, task.getStatus());
     }
+
     @Test
     void shouldRejectBlankTitle() {
         assertThrows(
@@ -28,10 +29,11 @@ class TaskTest {
                         "",
                         "Descrição válida",
                         TaskPriority.MEDIUM,
-                        LocalDate.now() .plusDays(1)
-                        )
+                        LocalDate.now().plusDays(1)
+                )
         );
     }
+
     @Test
     void shouldRejectTitleLongerThan120Characters() {
         String title = "a".repeat(121);
@@ -46,6 +48,7 @@ class TaskTest {
                 )
         );
     }
+
     @Test
     void shouldRejectDescriptionLongerThan500Characters() {
         String description = "a".repeat(501);
@@ -60,6 +63,7 @@ class TaskTest {
                 )
         );
     }
+
     @Test
     void shouldStartPendingTask() {
         Task task = Task.create(
@@ -73,6 +77,7 @@ class TaskTest {
 
         assertEquals(TaskStatus.IN_PROGRESS, task.getStatus());
     }
+
     @Test
     void shouldCompleteTaskInProgress() {
         Task task = Task.create(
@@ -87,6 +92,7 @@ class TaskTest {
 
         assertEquals(TaskStatus.COMPLETED, task.getStatus());
     }
+
     @Test
     void shouldNotCompletePendingTask() {
         Task task = Task.create(
@@ -101,6 +107,7 @@ class TaskTest {
                 task::complete
         );
     }
+
     @Test
     void shouldNotCancelCompletedTask() {
         Task task = Task.create(
